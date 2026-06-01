@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nitra Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f2f4f8;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    font-size: 18px;
+}
+
+.value {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.cams img {
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🌍 Nitra Dashboard</h1>
+
+<div class="grid">
+
+    <div class="card">
+        <h2>Meteostanica Hrad</h2>
+        <div id="temp">--</div>
+        <div id="feels">--</div>
+        <div id="clouds">--</div>
+    </div>
+
+    <div class="card">
+        <h2>Ambient Sensor 01</h2>
+        <div id="roomTemp">--</div>
+        <div id="co2">--</div>
+        <div id="light">--</div>
+    </div>
+
+    <div class="card">
+        <h2>Door Sensor 05</h2>
+        <div id="door">--</div>
+    </div>
+
+</div>
+
+<h2>📷 Kamery</h2>
+
+<div class="cams">
+    <img id="cam1">
+    <img id="cam2">
+</div>
+
+<script>
+async function load() {
+
+    const res = await fetch("/api/dashboard");
+    const data = await res.json();
+
+    document.getElementById("temp").innerText =
+        "🌡️ " + data.weather.temperature + " °C";
+
+    document.getElementById("feels").innerText =
+        "🥵 " + data.weather.feels_like + " °C";
+
+    document.getElementById("clouds").innerText =
+        "☁️ " + data.weather.cloudiness + " %";
+
+    document.getElementById("roomTemp").innerText =
+        "🏫 " + data.ambient.temperature + " °C";
+
+    document.getElementById("co2").innerText =
+        "🫁 " + data.ambient.co2 + " ppm";
+
+    document.getElementById("light").innerText =
+        "💡 " + data.ambient.light;
+
+    document.getElementById("door").innerText =
+        data.door.open ? "🚪 Otvorené" : "🔒 Zatvorené";
+
+    document.getElementById("cam1").src =
+        "/camera/0?t=" + Date.now();
+
+    document.getElementById("cam2").src =
+        "/camera/1?t=" + Date.now();
+}
+
+load();
+setInterval(load, 15000);
+</script>
+
+</body>
+</html>
