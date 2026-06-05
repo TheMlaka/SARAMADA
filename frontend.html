@@ -79,37 +79,43 @@ h1 {
 </div>
 
 <script>
+const API_BASE = "https://TVOJ-BACKEND.onrender.com";
+
 async function load() {
+    try {
+        const res = await fetch(`${API_BASE}/api/dashboard`);
+        const data = await res.json();
 
-    const res = await fetch("/api/dashboard");
-    const data = await res.json();
+        document.getElementById("temp").innerText =
+            "🌡️ " + data.weather.temperature + " °C";
 
-    document.getElementById("temp").innerText =
-        "🌡️ " + data.weather.temperature + " °C";
+        document.getElementById("feels").innerText =
+            "🥵 " + data.weather.feels_like + " °C";
 
-    document.getElementById("feels").innerText =
-        "🥵 " + data.weather.feels_like + " °C";
+        document.getElementById("clouds").innerText =
+            "☁️ " + data.weather.cloudiness + " %";
 
-    document.getElementById("clouds").innerText =
-        "☁️ " + data.weather.cloudiness + " %";
+        document.getElementById("roomTemp").innerText =
+            "🏫 " + data.ambient.temperature + " °C";
 
-    document.getElementById("roomTemp").innerText =
-        "🏫 " + data.ambient.temperature + " °C";
+        document.getElementById("co2").innerText =
+            "🫁 " + data.ambient.co2 + " ppm";
 
-    document.getElementById("co2").innerText =
-        "🫁 " + data.ambient.co2 + " ppm";
+        document.getElementById("light").innerText =
+            "💡 " + data.ambient.light;
 
-    document.getElementById("light").innerText =
-        "💡 " + data.ambient.light;
+        document.getElementById("door").innerText =
+            data.door.open ? "🚪 Otvorené" : "🔒 Zatvorené";
 
-    document.getElementById("door").innerText =
-        data.door.open ? "🚪 Otvorené" : "🔒 Zatvorené";
+        document.getElementById("cam1").src =
+            `${API_BASE}/camera/0?t=` + Date.now();
 
-    document.getElementById("cam1").src =
-        "/camera/0?t=" + Date.now();
+        document.getElementById("cam2").src =
+            `${API_BASE}/camera/1?t=` + Date.now();
 
-    document.getElementById("cam2").src =
-        "/camera/1?t=" + Date.now();
+    } catch (err) {
+        console.error("Dashboard load error:", err);
+    }
 }
 
 load();
